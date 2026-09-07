@@ -1,5 +1,4 @@
-gradio
+streamlit
 groq
 langchain-core
 langchain-groq
-streamlit
