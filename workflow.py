@@ -36,7 +36,7 @@ def run_decision_pipeline(user_input: str, priorities: str, api_key: str) -> str
             "priorities": priorities_clean
         }).content
 
-        # Markdown Structured Output Assembly
+        # Structured Output Assembly
         return f"""
 # 🎯 AI Decision Analysis Report
 
