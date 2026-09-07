@@ -1,41 +1,60 @@
-import gradio as gr
+import streamlit as st
 from workflow import run_decision_pipeline
 
-def create_ui():
-    with gr.Blocks(title="AI Decision Assistant") as demo:
-        gr.Markdown("# 🧠 Workflow AI Decision Assistant")
-        gr.Markdown("Step-by-step automated decision analysis powered by Groq & LangChain.")
+# Page Setup
+st.set_page_config(
+    page_title="AI Decision Assistant",
+    page_icon="🧠",
+    layout="wide"
+)
 
-        with gr.Row():
-            with gr.Column(scale=1):
-                groq_key_input = gr.Textbox(
-                    label="Groq API Key (Optional if set in environment)",
-                    placeholder="gsk_...",
-                    type="password"
+st.title("🧠 AI Decision Assistant")
+st.markdown("Automated 6-Step Decision Analysis Workflow powered by Groq & LangChain.")
+
+# Layout Columns
+col_inputs, col_output = st.columns([1, 1.3], gap="large")
+
+with col_inputs:
+    st.subheader("📋 Decision Inputs")
+    
+    groq_key_input = st.text_input(
+        "Groq API Key (Optional if set in Secrets)",
+        type="password",
+        placeholder="gsk_..."
+    )
+    
+    situation_input = st.text_area(
+        "1. Describe your Situation / Decision Problem",
+        placeholder="e.g., Should I quit my job to start a startup, or study for a master's degree abroad?",
+        height=150
+    )
+    
+    priority_input = st.text_area(
+        "2. Main Priorities / Constraints (Optional)",
+        placeholder="e.g., Low financial risk, high long-term growth, 1-year timeline",
+        height=90
+    )
+    
+    submit_btn = st.button("🚀 Start Decision Workflow", type="primary", use_container_width=True)
+
+with col_output:
+    st.subheader("🎯 Analysis Result")
+    
+    if submit_btn:
+        if not situation_input.strip():
+            st.warning("⚠️ Please describe your situation/problem first.")
+        else:
+            with st.spinner("⏳ Running 6-step AI Decision Workflow... Please wait..."):
+                # Execute Workflow
+                result = run_decision_pipeline(
+                    user_input=situation_input,
+                    priorities=priority_input,
+                    api_key=groq_key_input
                 )
-                situation_input = gr.Textbox(
-                    label="1. Describe your Situation / Decision Problem",
-                    placeholder="e.g., Should I quit my job to start a startup, or study for a master's degree abroad?",
-                    lines=4
-                )
-                priority_input = gr.Textbox(
-                    label="2. Main Priorities / Constraints (Optional)",
-                    placeholder="e.g., Low financial risk, high long-term growth, 1-year timeline",
-                    lines=2
-                )
-                submit_btn = gr.Button("🚀 Start Decision Workflow", variant="primary")
-
-            with gr.Column(scale=2):
-                output_markdown = gr.Markdown(label="Analysis Result")
-
-        submit_btn.click(
-            fn=run_decision_pipeline,
-            inputs=[situation_input, priority_input, groq_key_input],
-            outputs=[output_markdown]
-        )
-    return demo
-
-app = create_ui()
-
-if __name__ == "__main__":
-    app.launch()
+                
+                if result.startswith("❌") or result.startswith("⚠️"):
+                    st.error(result)
+                else:
+                    st.markdown(result)
+    else:
+        st.info("👈 Fill in your decision details on the left and click **Start Decision Workflow**.")
