@@ -9,7 +9,7 @@ st.set_page_config(
 )
 
 st.title("🧠 AI Decision Assistant")
-st.markdown("Automated 6-Step Decision Analysis Workflow powered by Groq & LangChain.")
+st.markdown("Automated 6-Step Decision Analysis Workflow powered by Groq (`openai/gpt-oss-120b`).")
 
 # Layout Columns
 col_inputs, col_output = st.columns([1, 1.3], gap="large")
@@ -45,7 +45,6 @@ with col_output:
             st.warning("⚠️ Please describe your situation/problem first.")
         else:
             with st.spinner("⏳ Running 6-step AI Decision Workflow... Please wait..."):
-                # Execute Workflow
                 result = run_decision_pipeline(
                     user_input=situation_input,
                     priorities=priority_input,
