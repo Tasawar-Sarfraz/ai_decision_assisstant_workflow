@@ -16,6 +16,6 @@ def get_llm_instance(api_key: str = None):
         
     return ChatGroq(
         groq_api_key=key_to_use,
-        model_name="qwen-2.5-32b",
+        model_name=openai/gpt-oss-120b",
         temperature=0.2
     )
